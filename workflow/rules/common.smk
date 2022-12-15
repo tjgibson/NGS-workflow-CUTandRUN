@@ -28,6 +28,11 @@ units = (
     .sort_index()
 )
 
+if config["use_spikeIn"] and config["epiCypher_spikeIn"]:
+	nucleosome_barcodes = (
+	    pd.read_csv(config["epiCypher_barcodes"])
+	)
+
 # function to check config files for inclusion of optional workflow steps
 def is_activated(xpath):
     c = config
@@ -145,15 +150,20 @@ def get_scaling_input(wildcards):
 			)
 	return stat_files
 
-def get_ind_spikeIn_input(wildcards):
-	unit=units.loc[wildcards.sample]
-	if all(unit["call_peaks"]):
-		return "results/bigwigs/zscore_normalized/individual/{sample}.bw".format(sample = wildcards.sample)
+def get_scaling_input_epiCypher(wildcards):
+	stat_files = expand(
+				["results/scaling_factors/{sample}_{barcode}_count.csv"],
+				sample = units["sample_name"],
+				barcode = nucleosome_barcodes["sequence"]
+			)
+	return stat_files
 
-def get_merged_spikeIn_input(wildcards):
-	unit =  units[units["sample_group"] == wildcards.sample]
-	if all(unit["call_peaks"]):
-		return "results/bigwigs/zscore_normalized/merged/{sample}.bw".format(sample = wildcards.sample)
+def get_library_size_fns(wildcards):
+	fns = expand(
+				["results/scaling_factors/{sample}_total_reads.tsv"],
+				sample = units["sample_name"],
+			)
+	return fns
 
 
 def get_final_output():
