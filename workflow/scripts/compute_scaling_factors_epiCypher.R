@@ -37,7 +37,8 @@ scaling_factors_ind <- barcode_counts |>
   left_join(library_sizes) |> 
   distinct() |> 
   mutate(percent_spike_in_reads = n_spike_in_reads / total_reads * 100) |>
-  mutate(scaling_factor = 1 / percent_spike_in_reads)
+  mutate(scaling_factor = 1 / percent_spike_in_reads) |> 
+  mutate(norm_scaling_factor = scaling_factor / max(scaling_factor))
 
 # combined replicate scaling factors
 scaling_factors_comb <- barcode_counts |>
@@ -46,7 +47,8 @@ scaling_factors_comb <- barcode_counts |>
   group_by(sample_group) |>
   summarise(n_spike_in_reads = sum(count), comb_total_reads = sum(total_reads)) |>
   mutate(percent_spike_in_reads = n_spike_in_reads / comb_total_reads * 100) |>
-  mutate(scaling_factor = 1 / percent_spike_in_reads)
+  mutate(scaling_factor = 1 / percent_spike_in_reads) |> 
+  mutate(norm_scaling_factor = scaling_factor / max(scaling_factor))
 
 # write output_data ------------------------------------------------------------
 scaling_factors_ind |> write_tsv(snakemake@output[[1]])

@@ -74,54 +74,57 @@ rule zscore_normalize_merged_bigwigs:
 		"../scripts/zscore_normalize_bw.R"
 
 
-# rule compute_scaling_factors_genome:
-# 	input:
-# 		mapping_stats=get_scaling_input
-# 	output:
-# 		"results/scaling_factors/individual_scaling_factors.tsv",
-# 		"results/scaling_factors/merged_scaling_factors.tsv"
-# 	conda:
-# 		"../envs/zscore_normalize_bw.yaml"
-# 	script:
-# 		"../scripts/compute_scaling_factors.R"
+if config["use_spikeIn"] and not config["epiCypher_spikeIn"]:
+	rule compute_scaling_factors_genome:
+		input:
+			mapping_stats=get_scaling_input
+		output:
+			"results/scaling_factors/individual_scaling_factors.tsv",
+			"results/scaling_factors/merged_scaling_factors.tsv"
+		conda:
+			"../envs/zscore_normalize_bw.yaml"
+		script:
+			"../scripts/compute_scaling_factors.R"
 
-rule count_epiCypher_barcodes:
-	input:
-		get_NGmerge_input,
-	params:
-		barcode="{barcode_sequence}"
-	conda:
-		"../envs/fqgrep.yaml"
-	output:
-		temp("results/scaling_factors/{sample}_{barcode_sequence}_count.csv"),
-	shell:
-		"""
-		count=$(fqgrep -c --reverse-complement {params.barcode} {input})
-		echo {wildcards.sample},{params.barcode},$count > {output}
-		"""
 
-rule compute_library_sizes:
-	input:
-		get_NGmerge_input
-	output:
-		temp("results/scaling_factors/{sample}_total_reads.tsv"),
-	conda:
-		"../envs/zscore_normalize_bw.yaml"
-	script:
-		"../scripts/compute_library_sizes.R"
+if config["use_spikeIn"] and config["epiCypher_spikeIn"]:
+	rule count_epiCypher_barcodes:
+		input:
+			get_NGmerge_input,
+		params:
+			barcode="{barcode_sequence}"
+		conda:
+			"../envs/fqgrep.yaml"
+		output:
+			temp("results/scaling_factors/{sample}_{barcode_sequence}_count.csv"),
+		shell:
+			"""
+			count=$(fqgrep -c --reverse-complement {params.barcode} {input})
+			echo {wildcards.sample},{params.barcode},$count > {output}
+			"""
 
-rule compute_scaling_factors_epiCypher:
-	input:
-		barcode_counts=get_scaling_input_epiCypher,
-		library_sizes=get_library_size_fns,
-	output:
-		"results/scaling_factors/individual_scaling_factors.tsv",
-		"results/scaling_factors/merged_scaling_factors.tsv",
-		"results/scaling_factors/epiCypher_barcode_counts.tsv",
-	conda:
-		"../envs/zscore_normalize_bw.yaml"
-	script:
-		"../scripts/compute_scaling_factors_epiCypher.R"
+	rule compute_library_sizes:
+		input:
+			get_NGmerge_input
+		output:
+			temp("results/scaling_factors/{sample}_total_reads.tsv"),
+		conda:
+			"../envs/zscore_normalize_bw.yaml"
+		script:
+			"../scripts/compute_library_sizes.R"
+
+	rule compute_scaling_factors_epiCypher:
+		input:
+			barcode_counts=get_scaling_input_epiCypher,
+			library_sizes=get_library_size_fns,
+		output:
+			"results/scaling_factors/individual_scaling_factors.tsv",
+			"results/scaling_factors/merged_scaling_factors.tsv",
+			"results/scaling_factors/epiCypher_barcode_counts.tsv",
+		conda:
+			"../envs/zscore_normalize_bw.yaml"
+		script:
+			"../scripts/compute_scaling_factors_epiCypher.R"
 		
 rule spikeIn_normalize_ind_bigwigs:
 	input:

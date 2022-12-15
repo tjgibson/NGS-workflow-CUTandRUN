@@ -17,7 +17,7 @@ file_bn <- gsub(".bw", "", basename(bw))
 
 # get scaling factor
 scaling_factor <- scaling_factors %>%
-  filter(IP_group == file_bn) %>%
+  filter(sample_name == file_bn) %>%
   select(norm_scaling_factor) %>%
   pull()
 
