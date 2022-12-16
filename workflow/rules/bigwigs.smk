@@ -105,11 +105,11 @@ if config["use_spikeIn"] and config["epiCypher_spikeIn"]:
 
 	rule compute_library_sizes:
 		input:
-			get_NGmerge_input
+			mapping_stats=get_scaling_input
 		output:
-			temp("results/scaling_factors/{sample}_total_reads.tsv"),
+			temp("results/scaling_factors/total_mapped_reads.tsv"),
 		conda:
-			"../envs/bioconductor_shortRead.yaml"
+			"../envs/zscore_normalize_bw.yaml"
 		script:
 			"../scripts/compute_library_sizes.R"
 
