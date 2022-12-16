@@ -3,7 +3,7 @@ library(tidyverse)
 library(ShortRead)
 
 # define input files -----------------------------------------------------------
-fq_files <- snakemake@input
+fq_files <- snakemake@input[[1]]
 sample <- snakemake@wildcards[["sample"]]
 
 # compute spike-in percentages and scaling factors -----------------------------
