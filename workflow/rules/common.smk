@@ -150,6 +150,13 @@ def get_scaling_input(wildcards):
 			)
 	return stat_files
 
+def get_mapping_stat_fns(wildcards):
+	stat_files = expand(
+				["results/aligned_reads/stats/{sample}_filtered.idxstats"],
+				sample = units["sample_name"]
+			)
+	return stat_files
+
 def get_scaling_input_epiCypher(wildcards):
 	stat_files = expand(
 				["results/scaling_factors/{sample}_{barcode}_count.csv"],
@@ -157,13 +164,6 @@ def get_scaling_input_epiCypher(wildcards):
 				barcode = nucleosome_barcodes["sequence"]
 			)
 	return stat_files
-
-def get_library_size_fns(wildcards):
-	fns = expand(
-				["results/scaling_factors/{sample}_total_reads.tsv"],
-				sample = units["sample_name"],
-			)
-	return fns
 
 
 def get_final_output():

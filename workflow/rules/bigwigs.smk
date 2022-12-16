@@ -105,7 +105,7 @@ if config["use_spikeIn"] and config["epiCypher_spikeIn"]:
 
 	rule compute_library_sizes:
 		input:
-			mapping_stats=get_scaling_input
+			mapping_stats=get_mapping_stat_fns,
 		output:
 			temp("results/scaling_factors/total_mapped_reads.tsv"),
 		conda:
@@ -116,7 +116,7 @@ if config["use_spikeIn"] and config["epiCypher_spikeIn"]:
 	rule compute_scaling_factors_epiCypher:
 		input:
 			barcode_counts=get_scaling_input_epiCypher,
-			library_sizes=get_library_size_fns,
+			library_sizes = "results/scaling_factors/total_mapped_reads.tsv",
 		output:
 			"results/scaling_factors/individual_scaling_factors.tsv",
 			"results/scaling_factors/merged_scaling_factors.tsv",

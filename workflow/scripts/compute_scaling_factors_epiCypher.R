@@ -24,8 +24,7 @@ barcode_counts <- barcode_counts |>
 
 # add total library sizes to count table ---------------------------------------
 library_sizes <- library_sizes_fns |> 
-  map(read_tsv) |> 
-  bind_rows() |> 
+  read_tsv() |> 
   distinct()
 
 
