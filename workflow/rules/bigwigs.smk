@@ -109,7 +109,7 @@ if config["use_spikeIn"] and config["epiCypher_spikeIn"]:
 		output:
 			temp("results/scaling_factors/{sample}_total_reads.tsv"),
 		conda:
-			"../envs/zscore_normalize_bw.yaml"
+			"../envs/bioconductor_shortRead.yaml"
 		script:
 			"../scripts/compute_library_sizes.R"
 
