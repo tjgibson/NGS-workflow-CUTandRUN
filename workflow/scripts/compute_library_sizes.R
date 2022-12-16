@@ -8,12 +8,9 @@ sample <- snakemake@wildcards[["sample"]]
 
 # compute spike-in percentages and scaling factors -----------------------------
 # get total read count for each sample
-count <- 0
-for (i in seq(fq_files)) {
-  fq <- fq_files[i]
+  fq <- fq_files[1]
   message(paste("computing total reads for file:", sample))
-  count <-  count + countFastq(fq)$records
-}
+  count <-  countFastq(fq)$records
 
 # add total read counts to output table ----------------------------------------
 library_sizes <- tibble(sample_name = sample, total_reads = count)

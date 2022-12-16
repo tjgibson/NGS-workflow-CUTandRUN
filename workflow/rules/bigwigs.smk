@@ -99,7 +99,7 @@ if config["use_spikeIn"] and config["epiCypher_spikeIn"]:
 			temp("results/scaling_factors/{sample}_{barcode_sequence}_count.csv"),
 		shell:
 			"""
-			count=$(fqgrep -c --reverse-complement {params.barcode} {input})
+			count=$(fqgrep -c {params.barcode} {input})
 			echo {wildcards.sample},{params.barcode},$count > {output}
 			"""
 
