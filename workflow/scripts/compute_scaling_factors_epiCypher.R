@@ -11,9 +11,9 @@ library_sizes_fns <- snakemake@input[["library_sizes"]]
 barcode_table <- read_csv(barcode_table_fn)
 unit_table <- read_tsv(unit_table_fn)
 barcode_counts <- barcode_count_fns |> 
-  map(read_csv, col_names = c("sample_name", "unit_name", "sequence", "count")) |> 
+  map(read_csv, col_names = c("sample_name", "sequence", "count")) |> 
   bind_rows() |> 
-  dinstinct()
+  distinct()
 
 # add barcode and sample information to count table ----------------------------
 barcode_counts <- barcode_counts |> 
@@ -46,7 +46,8 @@ scaling_factors_comb <- barcode_counts |>
   summarise(n_spike_in_reads = sum(count), comb_total_reads = sum(total_reads)) |>
   mutate(percent_spike_in_reads = n_spike_in_reads / comb_total_reads * 100) |>
   mutate(scaling_factor = 1 / percent_spike_in_reads) |> 
-  mutate(norm_scaling_factor = scaling_factor / max(scaling_factor))
+  mutate(norm_scaling_factor = scaling_factor / max(scaling_factor)) |> 
+  rename(sample_name = sample_group)
 
 # write output_data ------------------------------------------------------------
 scaling_factors_ind |> write_tsv(snakemake@output[[1]])

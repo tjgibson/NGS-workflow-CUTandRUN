@@ -115,6 +115,8 @@ if config["use_spikeIn"] and config["epiCypher_spikeIn"]:
 
 	rule compute_scaling_factors_epiCypher:
 		input:
+			barcode_table=config["epiCypher_barcodes"],
+			units=config["units"],
 			barcode_counts=get_scaling_input_epiCypher,
 			library_sizes = "results/scaling_factors/total_mapped_reads.tsv",
 		output:
