@@ -1,6 +1,5 @@
 # setup ------------------------------------------------------------------------
 library(tidyverse)
-library(ShortRead)
 
 # define input files -----------------------------------------------------------
 barcode_table_fn <- snakemake@input[["barcode_table"]]
