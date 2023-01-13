@@ -10,6 +10,7 @@ workflow/scripts/.snakemake*
 !config/samples.tsv
 !config/units.tsv
 !config/keep_chroms.txt
+!config/epicypher_met_panel_nuc_barcodes.csv
 !resources
 !resources/*
 !workflow/envs
