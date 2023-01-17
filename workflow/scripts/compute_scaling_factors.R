@@ -54,7 +54,8 @@ merged_scaling_factors <- scaling_factors |>
   mutate(total_reads = n_reference_reads + n_spikeIn_reads) |>
   mutate(percent_reference = n_reference_reads / total_reads * 100, percent_spikeIn = n_spikeIn_reads / total_reads * 100) |> 
   mutate(scaling_factor = 1 / percent_spikeIn) |> 
-  mutate(norm_scaling_factor = scaling_factor / max(scaling_factor))
+  mutate(norm_scaling_factor = scaling_factor / max(scaling_factor)) |> 
+  rename(sample_name = sample_group)
 
 # write output files -----------------------------------------------------------
 individual_scaling_factors |> 
