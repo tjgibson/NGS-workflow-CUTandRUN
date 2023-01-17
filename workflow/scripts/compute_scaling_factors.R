@@ -36,7 +36,7 @@ sample_table <- snakemake@config[["units"]] |>
 
 # join sample_table and mapping stats
 scaling_factors <- sample_table |>
-  left_join(individual_mapping_stats, by = "sample_name")
+  left_join(mapping_stats, by = "sample_name")
 
 
 
@@ -50,8 +50,8 @@ individual_scaling_factors <- scaling_factors |>
 # compute normalization factors for merged replicate samples -------------------
 merged_scaling_factors <- scaling_factors |> 
   group_by(sample_group) |> 
-  summarise(n_reference_reads = sum(reference), n_spikeIn_reads = sum(spikeIn))
-mutate(total_reads = n_reference_reads + n_spikeIn_reads) |>
+  summarise(n_reference_reads = sum(reference), n_spikeIn_reads = sum(spikeIn)) |> 
+  mutate(total_reads = n_reference_reads + n_spikeIn_reads) |>
   mutate(percent_reference = n_reference_reads / total_reads * 100, percent_spikeIn = n_spikeIn_reads / total_reads * 100) |> 
   mutate(scaling_factor = 1 / percent_spikeIn) |> 
   mutate(norm_scaling_factor = scaling_factor / max(scaling_factor))
