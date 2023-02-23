@@ -11,21 +11,26 @@ bw <- snakemake@input[["bw"]]
 scaling_factors <- read_tsv(snakemake@input[["scaling_factors"]])
 
 # get sample name to use for finding the correct scaling factor
-file_bn <- gsub(".bw", "", basename(bw))
+file_bn <- 
+  gsub(".bw", "", basename(bw)) |> 
+  gsub(pattern = "_total", replacement =  "") |> 
+  gsub(pattern = "_small", replacement =  "") |> 
+  gsub(pattern = "_large", replacement =  "")
+  
 
 # rescale bigwig file based on spike-in normalization factor ---------------------------------------------------
 
 # get scaling factor
-scaling_factor <- scaling_factors %>%
-  filter(sample_name == file_bn) %>%
-  select(norm_scaling_factor) %>%
+scaling_factor <- scaling_factors |>
+  filter(sample_name == file_bn) |>
+  select(norm_scaling_factor) |>
   pull()
 
 
 # normalize bigwig
-scaled.gr <- import(bw) %>%
-  as.data.frame() %>%
-  mutate(score = score * scaling_factor) %>%
+scaled.gr <- import(bw) |>
+  as.data.frame() |>
+  mutate(score = score * scaling_factor) |>
   makeGRangesFromDataFrame(keep.extra.columns = TRUE)
 
 # set seqinfo of normalized Granges object
