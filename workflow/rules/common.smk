@@ -74,7 +74,7 @@ def get_bam_merge(wildcards):
 	unit =  units[units["sample_group"] == wildcards.sample_group]
 	group = pd.unique(unit["sample_name"])
 	return expand(
-		"results/aligned_reads/filtered/{group}.bam", group=group)
+		"results/aligned_reads/split_fragments/{group}_{frag_size}.bam", group=group, frag_size = wildcards.frag_size)
 
 def macs2_read_format(wildcards):
 		unit = units.loc[wildcards.sample]
@@ -98,18 +98,18 @@ def get_macs2_input_narrow(wildcards):
 	if all(unit["call_peaks"]):
 		if all(unit["peak_type"] == "narrow"):
 			if all(pd.isna(unit["input"])):
-				return {"treatment": "results/aligned_reads/filtered/{sample}.bam"}
+				return {"treatment": "results/aligned_reads/split_fragments/{sample}_total.bam"}
 			else:
-				return {"treatment": "results/aligned_reads/filtered/{sample}.bam", "control": "results/aligned_reads/filtered/{input}.bam".format(input=unit.iloc[0].input)}
+				return {"treatment": "results/aligned_reads/split_fragments/{sample}_total.bam", "control": "results/aligned_reads/split_fragments/{input}_total.bam".format(input=unit.iloc[0].input)}
 
 def get_macs2_input_broad(wildcards):
 	unit = units.loc[wildcards.sample]
 	if all(unit["call_peaks"]):
 		if all(unit["peak_type"] == "broad"):
 			if all(pd.isna(unit["input"])):
-				return {"treatment": "results/aligned_reads/filtered/{sample}.bam"}
+				return {"treatment": "results/aligned_reads/split_fragments/{sample}_total.bam"}
 			else:
-				return {"treatment": "results/aligned_reads/filtered/{sample}.bam", "control": "results/aligned_reads/filtered/{input}.bam".format(input=unit.iloc[0].input)}
+				return {"treatment": "results/aligned_reads/split_fragments/{sample}_total.bam", "control": "results/aligned_reads/split_fragments/{input}_total.bam".format(input=unit.iloc[0].input)}
 
 def get_macs2_input_narrow_merged(wildcards):
 	unit =  units[units["sample_group"] == wildcards.sample_group]
@@ -117,11 +117,11 @@ def get_macs2_input_narrow_merged(wildcards):
 		if all(unit["peak_type"] == "narrow"):
 			if all(pd.isna(unit["input"])):
 				sample_names = pd.unique(unit["sample_name"])
-				return {"treatment": expand("results/aligned_reads/filtered/{sample}.bam",sample=sample_names)}
+				return {"treatment": expand("results/aligned_reads/split_fragments/{sample}_total.bam",sample=sample_names)}
 			else:
 				sample_names = pd.unique(unit["sample_name"])
 				input_names = pd.unique(units.loc[unit["input"]]["sample_name"])
-				return {"treatment": expand("results/aligned_reads/filtered/{sample}.bam",sample=sample_names), "control": expand("results/aligned_reads/filtered/{input}.bam",input=input_names)}
+				return {"treatment": expand("results/aligned_reads/split_fragments/{sample}_total.bam",sample=sample_names), "control": expand("results/aligned_reads/split_fragments/{input}_total.bam",input=input_names)}
 
 def get_macs2_input_broad_merged(wildcards):
 	unit =  units[units["sample_group"] == wildcards.sample_group]
@@ -129,11 +129,11 @@ def get_macs2_input_broad_merged(wildcards):
 		if all(unit["peak_type"] == "broad"):
 			if all(pd.isna(unit["input"])):
 				sample_names = pd.unique(unit["sample_name"])
-				return {"treatment": expand("results/aligned_reads/filtered/{sample}.bam",sample=sample_names)}
+				return {"treatment": expand("results/aligned_reads/split_fragments/{sample}_total.bam",sample=sample_names)}
 			else:
 				sample_names = pd.unique(unit["sample_name"])
 				input_names = pd.unique(units.loc[unit["input"]]["sample_name"])
-				return {"treatment": expand("results/aligned_reads/filtered/{sample}.bam",sample=sample_names), "control": expand("results/aligned_reads/filtered/{input}.bam",input=input_names)}
+				return {"treatment": expand("results/aligned_reads/split_fragments/{sample}_total.bam",sample=sample_names), "control": expand("results/aligned_reads/split_fragments/{input}_total.bam",input=input_names)}
 
 def get_replicate_peaks(wildcards):
 	unit =  units[units["sample_group"] == wildcards.sample_group]
@@ -169,13 +169,12 @@ def get_scaling_input_epiCypher(wildcards):
 def get_final_output():
 	final_output = []
 
-	
-		# z-score normalized bigwigs for individual replicates
+	# z-score normalized bigwigs for individual replicates
 	final_output.extend(expand(
 					[
-						"results/bigwigs/zscore_normalized/individual/{sample}.bw"
+						"results/bigwigs/zscore_normalized/individual/{sample}_{frag_size}.bw"
 					],
-					sample = units["sample_name"]
+					sample = units["sample_name"], frag_size = ["small","large","total"]
 				)
 			)
 
@@ -183,31 +182,35 @@ def get_final_output():
 	# z-score normalized bigwigs for merged replicates
 	final_output.extend(expand(
 					[
-						"results/bigwigs/zscore_normalized/merged/{sample}.bw"
+						"results/bigwigs/zscore_normalized/merged/{sample}_{frag_size}.bw"
 					],
-					sample = units["sample_group"]
+					sample = units["sample_group"], frag_size = ["small","large","total"]
 				)
 			)
+
+
+
+
 
 	if config["use_spikeIn"]:
 		# spikeIn-normalized bigwigs for individual replicates
 		final_output.extend(expand(
 						[
-							"results/bigwigs/spikeIn_normalized/individual/{sample}.bw"
+							"results/bigwigs/spikeIn_normalized/individual/{sample}_{frag_size}.bw"
 						],
-						sample = units.loc[units["call_peaks"],"sample_name"]
+						sample = units["sample_name"], frag_size = ["small","large","total"]
 					)
 				)
 
+	
 		# spikeIn-normalized bigwigs for merged replicates
 		final_output.extend(expand(
 						[
-							"results/bigwigs/spikeIn_normalized/merged/{sample}.bw"
+							"results/bigwigs/spikeIn_normalized/merged/{sample}_{frag_size}.bw"
 						],
-						sample = units.loc[units["call_peaks"],"sample_group"]
+						sample = units["sample_group"], frag_size = ["small","large","total"]
 					)
 				)
-
 
 
 	# add narrow peak output
