@@ -68,3 +68,29 @@ rule samtools_index_large_fragments:
         4     # This value - 1 will be sent to -@
     wrapper:
         "v1.1.0/bio/samtools/index"
+        
+rule samtools_index_filtered:
+    input:
+        "results/aligned_reads/filtered/{sample}.bam"
+    output:
+        "results/aligned_reads/filtered/{sample}.bam.bai"
+    log:
+        "logs/samtools_index/{sample}.log"
+    params:
+        "" # optional params string
+    threads:  # Samtools takes additional threads through its option -@
+        4     # This value - 1 will be sent to -@
+    wrapper:
+        "v1.1.0/bio/samtools/index"
+
+
+rule samtools_idxstats_filtered:
+	input:
+		bam="results/aligned_reads/split_fragments/{sample}_total.bam",
+		idx="results/aligned_reads/split_fragments/{sample}_total.bam.bai",
+	output:
+		"results/aligned_reads/stats/{sample}_filtered.idxstats"
+	log:
+		"logs/samtools/idxstats/{sample}.log"
+	wrapper:
+		"v1.1.0/bio/samtools/idxstats" 
