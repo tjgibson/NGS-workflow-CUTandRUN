@@ -14,7 +14,7 @@ rule macs2_call_peaks_narrow:
 		config["params"]["macs2_call_peaks_narrow"],
 		macs2_read_format
 	wrapper:
-		"v1.1.0/bio/macs2/callpeak"
+		"v9.4.2/bio/macs2/callpeak"
 
 rule macs2_call_peaks_broad:
 	input:
@@ -32,7 +32,7 @@ rule macs2_call_peaks_broad:
 		config["params"]["macs2_call_peaks_broad"],
 		macs2_read_format
 	wrapper:
-		"v1.1.0/bio/macs2/callpeak"
+		"v9.4.2/bio/macs2/callpeak"
 		
 rule macs2_call_peaks_narrow_merged:
 	input:
@@ -50,7 +50,7 @@ rule macs2_call_peaks_narrow_merged:
 		config["params"]["macs2_call_peaks_narrow"],
 		macs2_read_format_merged
 	wrapper:
-		"v1.1.0/bio/macs2/callpeak"
+		"v9.4.2/bio/macs2/callpeak"
 
 rule macs2_call_peaks_broad_merged:
 	input:
@@ -68,7 +68,7 @@ rule macs2_call_peaks_broad_merged:
 		config["params"]["macs2_call_peaks_broad"],
 		macs2_read_format_merged
 	wrapper:
-		"v1.1.0/bio/macs2/callpeak"
+		"v9.4.2/bio/macs2/callpeak"
 
 rule filter_peaks_by_replicates:
 	input:

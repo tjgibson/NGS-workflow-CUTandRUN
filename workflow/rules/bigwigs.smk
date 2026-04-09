@@ -63,7 +63,7 @@ rule zscore_normalize_ind_bigwigs:
 	conda:
 		"../envs/zscore_normalize_bw.yaml"
 	script:
-		"../scripts/zscore_normalize_bw.R"
+		"../scripts/zscore_normalize_bigwig.py"
 
 rule zscore_normalize_merged_bigwigs:
 	input:
@@ -73,7 +73,7 @@ rule zscore_normalize_merged_bigwigs:
 	conda:
 		"../envs/zscore_normalize_bw.yaml"
 	script:
-		"../scripts/zscore_normalize_bw.R"
+		"../scripts/zscore_normalize_bigwig.py"
 		
 if config["use_spikeIn"] and not config["epiCypher_spikeIn"]:
 	rule compute_scaling_factors_genome:
