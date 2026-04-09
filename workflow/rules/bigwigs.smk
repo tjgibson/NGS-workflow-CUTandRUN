@@ -61,7 +61,7 @@ rule zscore_normalize_ind_bigwigs:
 	output:
 		"results/bigwigs/zscore_normalized/individual/{sample}_{frag_size}.bw"
 	conda:
-		"../envs//pybigwig.yml"
+		"../envs/pybigwig.yaml"
 	script:
 		"../scripts/zscore_normalize_bigwig.py"
 
