@@ -61,7 +61,7 @@ rule zscore_normalize_ind_bigwigs:
 	output:
 		"results/bigwigs/zscore_normalized/individual/{sample}_{frag_size}.bw"
 	conda:
-		"../envs/zscore_normalize_bw.yaml"
+		"../envs//pybigwig.yml"
 	script:
 		"../scripts/zscore_normalize_bigwig.py"
 
@@ -71,7 +71,7 @@ rule zscore_normalize_merged_bigwigs:
 	output:
 		"results/bigwigs/zscore_normalized/merged/{sample}_{frag_size}.bw"
 	conda:
-		"../envs/zscore_normalize_bw.yaml"
+		"../envs/pybigwig.yaml"
 	script:
 		"../scripts/zscore_normalize_bigwig.py"
 		
@@ -83,7 +83,7 @@ if config["use_spikeIn"] and not config["epiCypher_spikeIn"]:
 			"results/scaling_factors/individual_scaling_factors.tsv",
 			"results/scaling_factors/merged_scaling_factors.tsv"
 		conda:
-			"../envs/zscore_normalize_bw.yaml"
+			"../envs/pybigwig.yaml"
 		script:
 			"../scripts/compute_scaling_factors.R"
 
